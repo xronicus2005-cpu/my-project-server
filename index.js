@@ -26,7 +26,7 @@ const { connection } = require('mongoose');
 
 
 // Middleware
-app.use(cors({ origin: "https://my-project-sand-eta.vercel.app", credentials: true }));
+app.use(cors({ origin: [process.env.FRONTEND_URL], credentials: true }));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -44,7 +44,7 @@ const server = http.createServer(app)
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL,
+    origin: [process.env.FRONTEND_URL],
     credentials: true
   }
 })
