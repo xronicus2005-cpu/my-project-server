@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const connect = require('./config/db');
-const jwt = require("jsonwebtoken")
+
 const Message = require("./modules/messages")
 
 
@@ -13,7 +13,7 @@ const {Server} = require('socket.io')
 connect();
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 
 // Routes
 const checkEmail = require('./routes/checkingEmail');
@@ -22,11 +22,11 @@ const auth = require('./routes/auth');
 const userRoutes = require('./routes/userRoutes');
 const defRoute = require('./routes/defaultRoutes');
 const chatRoutes = require("./routes/chatRoutes")
-const { connection } = require('mongoose');
 
+const FRONTEND_URL = "https://my-project-sand-eta.vercel.app"
 
 // Middleware
-app.use(cors({ origin: [process.env.FRONTEND_URL], credentials: true }));
+app.use(cors({ origin: [FRONTEND_URL], credentials: true }));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -44,7 +44,7 @@ const server = http.createServer(app)
 
 const io = new Server(server, {
   cors: {
-    origin: [process.env.FRONTEND_URL],
+    origin: [FRONTEND_URL],
     credentials: true
   }
 })
