@@ -23,10 +23,9 @@ const userRoutes = require('./routes/userRoutes');
 const defRoute = require('./routes/defaultRoutes');
 const chatRoutes = require("./routes/chatRoutes")
 
-const FRONTEND_URL = "https://my-project-sand-eta.vercel.app"
 
 // Middleware
-app.use(cors({ origin: [FRONTEND_URL], credentials: true }));
+app.use(cors({ origin: [process.env.FRONTEND_URL], credentials: true }));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -44,7 +43,7 @@ const server = http.createServer(app)
 
 const io = new Server(server, {
   cors: {
-    origin: [FRONTEND_URL],
+    origin: [process.env.FRONTEND_URL],
     credentials: true
   }
 })
