@@ -154,4 +154,86 @@ async function clearMessages(req, res) {
   }
 }
 
-module.exports = {getOrCreate, getAll, getFriend, givingMessages, deleteConversation, clearMessages}
+async function getUserFor(req, res) {
+
+  try{
+
+    const userId = req.params.id
+
+    const user = await User.findById(userId).select("-password")
+
+    if(!user){
+      return res.status(400).json({message: "Bunday id li paydalaniwshi joq"})
+    }
+
+    res.status(200).json({user})
+
+  }
+
+  catch(err){
+    return res.status(500).json({message: err.message})
+  }
+  
+}
+
+async function getCount(req, res) {
+
+  try{
+
+    const userId = req.user._id;
+    const conversations = await Conversation.find({ members: userId });
+      
+    let unreadCount = 0;
+      
+    for (let c of conversations) {
+      const msgs = await Message.find({ conversationId: c._id, readBy: { $ne: userId } });
+      unreadCount += msgs.length;
+    }
+
+    res.json({ unreadCount });
+
+  }
+  catch(err){
+    return res.status(500).json({message: err.message})
+  }
+
+}
+  
+async function mark(req, res){
+
+  try{
+
+    const userId = req.user._id
+
+    await Message.updateMany(
+      { conversationId: req.params.conversationId, readBy: { $ne: userId } },
+      { $push: { readBy: userId } }
+    )
+
+    res.json({ message: "Marked as read" });
+
+  }
+  catch{
+    return res.status(500).json({message: err.message})
+  }
+
+}
+
+
+
+////
+
+async function markAsRead(req, res) {
+  try{
+    await Conversation.findByIdAndUpdate(req.params.conversationId, {
+      unreadCount: 0
+    })
+
+    res.json({message: "Cleared"})
+  }
+  catch(err){
+    return res.status(500).json({message: err.message})
+  }
+}
+
+module.exports = {getOrCreate, getAll, getFriend, givingMessages, deleteConversation, clearMessages, getUserFor, getCount, mark, markAsRead}

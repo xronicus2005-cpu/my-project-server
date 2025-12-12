@@ -5,6 +5,7 @@ const path = require('path');
 const connect = require('./config/db');
 
 const Message = require("./modules/messages")
+const Conversation = require("./modules/conversations")
 
 
 const http = require('http')
@@ -22,12 +23,12 @@ const auth = require('./routes/auth');
 const userRoutes = require('./routes/userRoutes');
 const defRoute = require('./routes/defaultRoutes');
 const chatRoutes = require("./routes/chatRoutes")
+const uploadRoute = require("./routes/upload")
 
 
 // Middleware
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // API routes
 app.use("/api", checkEmail);
@@ -36,7 +37,7 @@ app.use("/api", auth);
 app.use("/api", userRoutes);
 app.use("/api", defRoute);
 app.use("/api", chatRoutes)
-
+app.use("/api", uploadRoute)
 //app.listen(PORT, () => {console.log("Server is running")})
 
 const server = http.createServer(app)
@@ -56,9 +57,13 @@ io.on("connection", (socket) => {
     console.log(`User joined room: ${conversationId}`);
   });
 
+
+
   socket.on("sendMessage", async(data) => {
     const message = new Message(data);
     await message.save();
+
+    await Conversation.findByIdAndUpdate(data.conversationId, {$inc: {unreadCount: 1}})
 
     io.to(data.conversationId).emit("receiveMessage", message);
   });

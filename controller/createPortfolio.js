@@ -1,16 +1,17 @@
 const Portfolio = require("../modules/portfolio")
+const imagekit = require("../config/imagekit")
 
 const createPortfolio = async(req, res) =>{
 
   try{
 
-    const { workName, niche } = req.body;
-    const photo = req.file ? req.file.filename : null;
-
-    // maydanlardagi manis joq bolsa
-    if (!workName || !niche || !photo) {
-      return res.status(400).json({ message: "Maydanlar toltirilmagan" });
+    const { workName, niche, photo } = req.body;
+    
+    //maydanlar manisi joq bolsa
+    if(!workName || !niche || !photo){
+      return res.status(400).json({message: "Maydanlar toltirilmagan"})
     }
+
 
     // user id di aliw
     const userId = req.user._id;
@@ -20,7 +21,7 @@ const createPortfolio = async(req, res) =>{
       userId,
       workName,
       niche,
-      photo,
+      photo
     });
 
     await newPortfolio.save();

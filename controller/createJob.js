@@ -6,16 +6,13 @@ const createWork = async (req, res) => {
   try{
 
 
-    const userId = req.user ? req.user._id : req.body.userId;
-    const {title, niche, profession, infoWork, buyersMust, cost} = req.body;
+    const userId = req.user._id
+    const {title, workType ,infoWork, buyersMust, cost, imgWork} = req.body;
 
+    const niche = workType?.niche
+    const profession = workType?.profession
 
-    let imgWork = null;
-    if (req.file) {
-      imgWork = req.file.filename; // Multer saqlagan fayl nomi
-    }
-
-    if (!userId || !title || !niche || !profession || !infoWork || !buyersMust || !cost) {
+    if (!userId || !title || !niche || !profession || !infoWork || !buyersMust || !cost || !imgWork) {
       return res.status(400).json({ message: "Barliq maydanlar toltirilgan boliwi kerkek" });
     }
 

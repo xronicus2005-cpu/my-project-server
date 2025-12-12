@@ -7,6 +7,11 @@ const ConversationSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
+    unreadCount: {
+      type: Number,
+      default: 0
+    },
   },
   { timestamps: true }
 );

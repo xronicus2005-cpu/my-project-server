@@ -16,7 +16,7 @@ const updateWork = async (req, res) => {
       infoWork: req.body.infoWork,
       buyersMust: req.body.buyersMust,
       cost: req.body.cost,
-      ...(req.file && {imgWork: req.file.filename})
+      imgWork: req.body.imgWork
     }, {new: true})
 
     if(!updatedWork){

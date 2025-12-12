@@ -8,11 +8,11 @@ const updeterPersonalInfo = async (req, res) => {
 
     const userID = req.user._id
     
-    const {name, lastName, fathersName, job, info} = req.body
+    const {name, lastName, fathersName, job, info, imgProfile} = req.body
 
     const {error} = validationOfUpdetedUser(req.body)
     console.log(error)
-    console.log(req.body)
+    
 
     if(error){
       return res.status(400).json({message: error.details[0].message})
@@ -20,14 +20,14 @@ const updeterPersonalInfo = async (req, res) => {
 
     const updatedDate = {name, lastName, fathersName, job, info}
 
-    if(req.file){
-      updatedDate.imgProfile = `/uploads/${req.file.filename}`
+    if(imgProfile){
+      updatedDate.imgProfile = imgProfile
     }
 
-    await User.findByIdAndUpdate(userID, updatedDate)
+    await User.findByIdAndUpdate(userID, updatedDate, {new: true})
     const updatedUser = await User.findById(userID)
+    
     res.json({updated: true, user: updatedUser})
-
   }
   catch(err){
     console.log(err)
@@ -43,6 +43,8 @@ function validationOfUpdetedUser(body){
     fathersName: Joi.string().min(3).max(25).required(),
     job: Joi.string().min(3).max(50).required(),
     info: Joi.string().max(255).min(10).allow("").optional(),
+    imgProfile: Joi.string().optional(),
+
   })
 
   return schema.validate(body)
