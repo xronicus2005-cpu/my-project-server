@@ -1,5 +1,4 @@
 const Portfolio = require("../modules/portfolio")
-const imagekit = require("../config/imagekit")
 
 const createPortfolio = async(req, res) =>{
 

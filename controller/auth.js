@@ -31,10 +31,17 @@ const auth = async (req, res) => {
       return res.status(400).json({message: "login yamasa parol qate"})
     }
 
-    const key = process.env.PRIVTE_KEY
+    const key = process.env.JWT_SECRET
 
     const token = jwt.sign({_id: user._id, role: user.role}, key, {expiresIn: '7d'})
-    res.json({login: true, token: token})
+    res.cookie("accessToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 1000 * 60 * 60 * 24
+    })
+
+    res.json({success: true})
   }
 
   catch(err){

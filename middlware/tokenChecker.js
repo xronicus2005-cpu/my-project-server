@@ -1,21 +1,22 @@
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
-function tokenChecker(req, res, next) {
+async function tokenChecker(req, res, next) {
+  const token = req.cookies.accessToken;
 
-  const token = req.header('x-auth-token')
-
-  if(!token){
-    return res.status(401).send("Token haqiyqiy emes")
+  if (!token) {
+    return res.status(401).json({ message: "Token joq" });
   }
 
-  try{
-    const decoded = jwt.verify(token, process.env.PRIVTE_KEY)
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     req.user = decoded
-    next()
-  }
-  catch(err){
-    return res.status(400).send("Jaraqsiz token")
+
+    next();
+
+  } catch (err) {
+    return res.status(400).json({ message: "Jaraqsiz token" });
   }
 }
 
-module.exports = tokenChecker
+module.exports = tokenChecker;

@@ -7,13 +7,17 @@ const createWork = async (req, res) => {
 
 
     const userId = req.user._id
-    const {title, workType ,infoWork, buyersMust, cost, imgWork} = req.body;
+    const {title, workType ,infoWork, buyersMust, cost, imgWork, location} = req.body;
 
     const niche = workType?.niche
     const profession = workType?.profession
 
     if (!userId || !title || !niche || !profession || !infoWork || !buyersMust || !cost || !imgWork) {
       return res.status(400).json({ message: "Barliq maydanlar toltirilgan boliwi kerkek" });
+    }
+
+    if(!location){
+      return res.status(400).json({message: "Siz profilda jasaw orninizdi korsetpegensiz"})
     }
 
     //jana jumisshini jaratiw
@@ -24,7 +28,8 @@ const createWork = async (req, res) => {
       imgWork,
       infoWork,
       buyersMust,
-      cost
+      cost,
+      location
     })
 
     await newWork.save()

@@ -1,22 +1,40 @@
 const Works = require("../modules/works")
+const {User} = require("../modules/user") // User modelini import qilamiz
 
 const sortIt = async (req, res) => {
   try {
-    const { profession } = req.query
+    const { profession } = req.query;
 
-    let query = { "workType.niche": "IT" }
-
-    // profession di All manisine tekseriw
-    if (profession && profession !== "All") {
-      query["workType.profession"] = profession
+    // 1️⃣ Current user'ni topamiz (tokenChecker ishlasa req.user._id bo‘ladi)
+    const currentUser = await User.findById(req.user._id);
+    if (!currentUser) {
+      return res.status(401).json({ message: "User topilmadi" });
     }
 
-    const jobs = await Works.find(query).populate("userId", "title imgWork cost niche profession rating")
+    // Shu location'dagi user'larni topamiz
+    const usersInLocation = await User.find({ "address.city": currentUser.address.city }).select("_id");
+    const userIds = usersInLocation.map(u => u._id);
 
-    res.status(200).json({ jobs })
+
+    // 3️⃣ Job filter
+    let query = {
+      userId: { $in: userIds },
+      "workType.niche": "IT"
+    };
+
+    if (profession && profession !== "All") {
+      query["workType.profession"] = profession;
+    }
+
+    // 4️⃣ Jobs'ni olish
+    const jobs = await Works.find(query)
+      .populate("userId", "title imgWork cost workType rating location"); // location ham chiqarish mumkin
+
+    res.status(200).json({ jobs });
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    console.error(err);
+    res.status(500).json({ message: err.message });
   }
-}
+};
 
-module.exports = sortIt
+module.exports = sortIt;

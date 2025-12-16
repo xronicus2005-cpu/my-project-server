@@ -1,4 +1,5 @@
 const express = require('express')
+const tokenChecker = require("../middlware/tokenChecker")
 
 const routes = express.Router()
 
@@ -10,10 +11,10 @@ const forElektr = require("../controller/sortElektr")
 const forCars = require("../controller/sortCars")
 
 //routes
-routes.get("/getJobsIt", forIt)
-routes.get("/getJobsHand", forHand)
-routes.get("/getJobsTeach", forTeach)
-routes.get("/getJobsElektr", forElektr)
-routes.get("/getJobsCars", forCars)
+routes.get("/getJobsIt", tokenChecker, forIt)
+routes.get("/getJobsHand", tokenChecker, forHand)
+routes.get("/getJobsTeach", tokenChecker, forTeach)
+routes.get("/getJobsElektr", tokenChecker, forElektr)
+routes.get("/getJobsCars", tokenChecker, forCars)
 
 module.exports = routes

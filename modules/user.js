@@ -37,7 +37,7 @@ function validateUser(user){
     number: Joi.string().required(),
     address: Joi.object({state: Joi.string().required(), city: Joi.string().required()}).required(),
     login: Joi.string().min(5).max(50).required(),
-    emailAddress: Joi.string().min(5).max(25).email().required(),
+    emailAddress: Joi.string().min(5).max(100).email().required(),
     password: Joi.string().required().min(5).max(1024),
 
     role: Joi.string(),

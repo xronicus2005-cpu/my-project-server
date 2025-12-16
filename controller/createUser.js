@@ -39,9 +39,16 @@ const creatingUser = async (req, res) => {
 
     await user.save()
 
-    const key = process.env.PRIVTE_KEY
+    const key = process.env.PRIVATE_KEY
     
     const token = jwt.sign({_id: user._id, role: user.role}, key, {expiresIn: '1d'})
+    res.cookie("accessToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 1000 * 60 * 60 * 24
+    })
+    
     res.json({login: true, token: token})
 
 

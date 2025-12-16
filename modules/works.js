@@ -1,3 +1,4 @@
+const { required } = require('joi')
 const mongoose = require('mongoose')
 
 const workShema = new mongoose.Schema({
@@ -14,7 +15,9 @@ const workShema = new mongoose.Schema({
   
   cost: {type: String, required: true},
 
-  rating: {type: String, default: 0.1}
+  rating: {type: String, default: 0.1},
+
+  location:{type: String, required: true}
 }, {timestamps: true})
 
 const Work = mongoose.model("Works", workShema)
