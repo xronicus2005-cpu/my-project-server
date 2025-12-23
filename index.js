@@ -50,7 +50,7 @@ app.use("/api", defRoute);
 app.use("/api", chatRoutes)
 app.use("/api", uploadRoute)
 
-app.set("trust proxy", 1)
+
 //app.listen(PORT, () => {console.log("Server is running")})
 
 app.post("/api/logout", (req, res) => {

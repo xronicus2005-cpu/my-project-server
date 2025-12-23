@@ -6,12 +6,14 @@ const updateWork = async (req, res) => {
 
     const workId = req.params.id
 
+    console.log(req.body)
+
     const updatedWork = await Works.findByIdAndUpdate(workId,
       {
       title: req.body.title,
       workType: {
-        niche: req.body.niche,
-        profession: req.body.profession
+        niche: req.body.workType.niche,
+        profession: req.body.workType.profession,
       },
       infoWork: req.body.infoWork,
       buyersMust: req.body.buyersMust,
